@@ -38,6 +38,10 @@ add_definitions(-DMINOR_VERSION=\"${MINOR_VERSION}\")
 add_definitions(-DPATCH_VERSION=\"${PATCH_VERSION}\")
 add_definitions(-DFULL_VERSION=\"${FULL_VERSION}\")
 
+if(NOT DEFINED ENV{QTDIR})
+    message(FATAL_ERROR "Environment variable QTDIR is not set. Please locate your Qt folder")
+endif()
+
 find_program(CUPS_CONFIG_EXECUTABLE NAMES cups-config)
 if(CUPS_CONFIG_EXECUTABLE)
     exec_program(${CUPS_CONFIG_EXECUTABLE} ARGS --serverbin OUTPUT_VARIABLE CUPS_SERVERBIN)
@@ -65,6 +69,7 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 # Mac OS-X ************************************
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 
+    set(USEQT5 Yes)
   set(USE_DBUS 0)
   set(DEF_CUPS_PPD_DIR /usr/share/cups/model/)
 
