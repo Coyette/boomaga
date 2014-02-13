@@ -55,23 +55,23 @@ set(USE_DBUS 1)
 # Linux ***************************************
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 
-  set(DEF_CUPS_PPD_DIR /usr/share/ppd/boomaga)
-  set(DEF_DBUS_MACINE_ID_DIR /var/lib/dbus)
-  set(DEF_DBUS_SERVICE_DIR ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
+    set(DEF_CUPS_PPD_DIR /usr/share/ppd/boomaga)
+    set(DEF_DBUS_MACINE_ID_DIR /var/lib/dbus)
+    set(DEF_DBUS_SERVICE_DIR ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
 
 # FreeBSD *************************************
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 
-  set(DEF_CUPS_PPD_DIR /usr/local/share/cups/model)
-  set(DEF_DBUS_MACINE_ID_DIR /var/db/dbus)
-  set(DEF_DBUS_SERVICE_DIR ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
+    set(DEF_CUPS_PPD_DIR /usr/local/share/cups/model)
+    set(DEF_DBUS_MACINE_ID_DIR /var/db/dbus)
+    set(DEF_DBUS_SERVICE_DIR ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
 
 # Mac OS-X ************************************
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 
     set(USEQT5 Yes)
-  set(USE_DBUS 0)
-  set(DEF_CUPS_PPD_DIR /usr/share/cups/model/)
+    set(USE_DBUS 0)
+    set(DEF_CUPS_PPD_DIR /usr/share/cups/model/)
 
 # Unsupported OS ******************************
 else()
@@ -84,16 +84,16 @@ add_definitions(-DUSE_DBUS=${USE_DBUS})
 
 
 macro(setByDefault VAR_NAME VAR_VALUE)
-  if (NOT DEFINED ${VAR_NAME})
-    set (${VAR_NAME} ${VAR_VALUE})
-    add_definitions(-D${VAR_NAME}=\"${VAR_VALUE}\")
-  endif()
+    if (NOT DEFINED ${VAR_NAME})
+        set (${VAR_NAME} ${VAR_VALUE})
+        add_definitions(-D${VAR_NAME}=\"${VAR_VALUE}\")
+     endif()
 endmacro()
 
 macro(setFirstUpper VAR_NAME VAR_VALUE)
-  string(SUBSTRING ${VAR_VALUE} 0 1 FIRST_LETTER)
-  string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
-  string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" ${VAR_NAME} "${VAR_VALUE}")
+    string(SUBSTRING ${VAR_VALUE} 0 1 FIRST_LETTER)
+    string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
+    string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" ${VAR_NAME} "${VAR_VALUE}")
 endmacro()
 
 set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
@@ -118,8 +118,8 @@ setByDefault(CUPS_BACKEND_DIR       "${DEF_CUPS_BACKEND_DIR}")
 setByDefault(CUPS_FILTER_DIR        "${DEF_CUPS_FILTER_DIR}")
 setByDefault(CUPS_PPD_DIR           "${DEF_CUPS_PPD_DIR}")
 if(USE_DBUS)
-  setByDefault(DBUS_MACINE_ID_DIR   "${DEF_DBUS_MACINE_ID_DIR}")
-  setByDefault(DBUS_SERVICE_DIR     "${DEF_DBUS_SERVICE_DIR}")
+    setByDefault(DBUS_MACINE_ID_DIR   "${DEF_DBUS_MACINE_ID_DIR}")
+    setByDefault(DBUS_SERVICE_DIR     "${DEF_DBUS_SERVICE_DIR}")
 endif()
 
 add_subdirectory(cups)
@@ -136,8 +136,8 @@ message(STATUS "*  CUPS_BACKEND_DIR     =  ${CUPS_BACKEND_DIR}")
 message(STATUS "*  CUPS_FILTER_DIR      =  ${CUPS_FILTER_DIR}")
 message(STATUS "*  CUPS_PPD_DIR         =  ${CUPS_PPD_DIR}")
 if(USE_DBUS)
-  message(STATUS "*  DBUS_MACINE_ID_DIR   =  ${DBUS_MACINE_ID_DIR}")
-  message(STATUS "*  DBUS_SERVICE_DIR     =  ${DBUS_SERVICE_DIR}")
+    message(STATUS "*  DBUS_MACINE_ID_DIR   =  ${DBUS_MACINE_ID_DIR}")
+    message(STATUS "*  DBUS_SERVICE_DIR     =  ${DBUS_SERVICE_DIR}")
 endif()
 message(STATUS "*")
 message(STATUS "* You can change the following options using cmake options:")
