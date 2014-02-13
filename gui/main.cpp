@@ -26,20 +26,23 @@
 
 #include "kernel/project.h"
 #include "mainwindow.h"
-#include "dbus.h"
 #include "kernel/inputfile.h"
 
 #include <QApplication>
 #include <QTextStream>
 #include <QLocale>
 #include <QTranslator>
-#include <QDBusConnection>
 #include <QFileInfo>
 #include <QLibraryInfo>
 #include <QDebug>
 #include <QProcessEnvironment>
 #include <QFile>
 #include <QDir>
+
+#if USE_DBUS
+#include "dbus.h"
+#include <QDBusConnection>
+#endif
 
 /************************************************
 
@@ -223,7 +226,9 @@ int main(int argc, char *argv[])
     f.close();
 #endif
 
+#if USE_DBUS
     BoomagaDbus dbus("org.boomaga", "/boomaga");
+#endif
 
     MainWindow mainWindow;
     mainWindow.show();

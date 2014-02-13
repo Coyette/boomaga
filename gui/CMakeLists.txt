@@ -42,7 +42,6 @@ set(HEADERS
     actions.h
     settings.h
     widgets.h
-    dbus.h
     printersettings/printersettings.h
     previewwidget.h
     aboutdialog/aboutdialog.h
@@ -64,7 +63,6 @@ set(SOURCES
     actions.cpp
     settings.cpp
     widgets.cpp
-    dbus.cpp
     printersettings/printersettings.cpp
     previewwidget.cpp
     aboutdialog/aboutdialog.cpp
@@ -81,16 +79,21 @@ set (MOCS
     mainwindow.h
     actions.h
     widgets.h
-    dbus.h
     printersettings/printersettings.h
     previewwidget.h
     aboutdialog/aboutdialog.h
 )
 
+if(USE_DBUS)
+    set(HEADERS ${HEADERS} dbus.h)
+    set(SOURCES ${SOURCES} dbus.cpp)
+    set(MOCS    ${MOCS}    dbus.h)
+endif()
+
 set(LIBRARIES
 )
 
-set(QT_USE_QTDBUS 1)
+set(QT_USE_QTDBUS ${USE_DBUS})
 
 set(UI_FILES
     mainwindow.ui
@@ -146,6 +149,7 @@ find_package(Cups REQUIRED QUIET)
 find_package(snappy REQUIRED QUIET)
 find_package(Poppler REQUIRED QUIET)
 
+
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/third-party
@@ -157,6 +161,7 @@ include_directories(
     ${POPPLER_INCLUDE_DIRS}
     ${POPPLERCPP_INCLUDE_DIRS}
 )
+
 
 include(translations/translatorsinfo/CMakeLists.txt)
 get_translatorsinfo_qrc(translatorsinfo_qrc)
@@ -172,6 +177,7 @@ if(USE_QT4)
 else()
     cmake_minimum_required(VERSION 2.8.3)
     find_package(Qt5Widgets REQUIRED QUIET)
+
     include_directories(${Qt5Widgets_INCLUDE_DIRS})
     add_definitions(${Qt5Widgets_DEFINITIONS})
     set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Widgets_LIBRARIES})
@@ -181,11 +187,12 @@ else()
     add_definitions(${Qt5PrintSupport_DEFINITIONS})
     set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5PrintSupport_LIBRARIES})
 
-    find_package(Qt5DBus REQUIRED QUIET)
-    include_directories(${Qt5DBus_INCLUDE_DIRS})
-    add_definitions(${Qt5DBus_DEFINITIONS})
-    set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5DBus_LIBRARIES})
-
+    if(USE_DBUS)
+        find_package(Qt5DBus REQUIRED QUIET)
+        include_directories(${Qt5DBus_INCLUDE_DIRS})
+        add_definitions(${Qt5DBus_DEFINITIONS})
+        set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5DBus_LIBRARIES})
+    endif()
 
     find_package(Qt5LinguistTools REQUIRED QUIET)
 
@@ -212,7 +219,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/org.boomaga.service
                ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service
                @ONLY)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service DESTINATION ${DBUS_SERVICE_DIR})
-
+if(USE_DBUS)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service DESTINATION ${DBUS_SERVICE_DIR})
+endif()
 
 add_subdirectory(pdfmerger)
