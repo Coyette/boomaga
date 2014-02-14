@@ -129,22 +129,8 @@ endif()
 
 #*******************************************
 
-option(USE_QT5 "Force use the Qt5." $ENV{USE_QT5})
-option(USE_QT4 "Force use the Qt4." $ENV{USE_QT4})
 
-if((USE_QT4 AND USE_QT5) OR
-   (NOT USE_QT4 AND NOT USE_QT5))
-    find_package(Qt4 QUIET)
-    if (QT4_FOUND)
-        set(USE_QT4 ON)
-        set(USE_QT5 OFF)
-    else()
-        set(USE_QT4 OFF)
-        set(USE_QT5 ON)
-    endif()
-endif()
-
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 find_package(Cups REQUIRED QUIET)
 find_package(snappy REQUIRED QUIET)
 find_package(Poppler REQUIRED QUIET)

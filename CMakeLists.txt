@@ -38,23 +38,49 @@ add_definitions(-DMINOR_VERSION=\"${MINOR_VERSION}\")
 add_definitions(-DPATCH_VERSION=\"${PATCH_VERSION}\")
 add_definitions(-DFULL_VERSION=\"${FULL_VERSION}\")
 
-if(NOT DEFINED ENV{QTDIR})
-    message(FATAL_ERROR "Environment variable QTDIR is not set. Please locate your Qt folder")
+
+if(DEFINED ENV{QTDIR})
+    set(CMAKE_PREFIX_PATH $ENV{QTDIR}/lib/cmake ${CMAKE_PREFIX_PATH})
 endif()
+
 
 find_program(CUPS_CONFIG_EXECUTABLE NAMES cups-config)
 if(CUPS_CONFIG_EXECUTABLE)
+
     exec_program(${CUPS_CONFIG_EXECUTABLE} ARGS --serverbin OUTPUT_VARIABLE CUPS_SERVERBIN)
     set(DEF_CUPS_BACKEND_DIR "${CUPS_SERVERBIN}/backend")
     set(DEF_CUPS_FILTER_DIR  "${CUPS_SERVERBIN}/filter")
+
 else(CUPS_CONFIG_EXECUTABLE)
+
     message(FATAL_ERROR "Can't find cups-config. Are CUPS development packages installed?")
+
 endif(CUPS_CONFIG_EXECUTABLE)
 
-set(USE_DBUS 1)
+
+
+# Qt version **********************************
+option(USE_QT5 "Force use the Qt5." $ENV{USE_QT5})
+option(USE_QT4 "Force use the Qt4." $ENV{USE_QT4})
+
+if((USE_QT4 AND USE_QT5) OR
+   (NOT USE_QT4 AND NOT USE_QT5))
+    find_package(Qt4 QUIET)
+    if (QT4_FOUND)
+        set(USE_QT4 ON)
+        set(USE_QT5 OFF)
+    else()
+        set(USE_QT4 OFF)
+        set(USE_QT5 ON)
+    endif()
+endif()
+
+
+
 # Linux ***************************************
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 
+    set(USE_DBUS 1)
     set(DEF_CUPS_PPD_DIR /usr/share/ppd/boomaga)
     set(DEF_DBUS_MACINE_ID_DIR /var/lib/dbus)
     set(DEF_DBUS_SERVICE_DIR ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
@@ -62,6 +88,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 # FreeBSD *************************************
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 
+    set(USE_DBUS 1)
     set(DEF_CUPS_PPD_DIR /usr/local/share/cups/model)
     set(DEF_DBUS_MACINE_ID_DIR /var/db/dbus)
     set(DEF_DBUS_SERVICE_DIR ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
@@ -69,7 +96,8 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 # Mac OS-X ************************************
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 
-    set(USEQT5 Yes)
+    set(USE_QT5 ON)
+    set(USE_QT4 OFF)
     set(USE_DBUS 0)
     set(DEF_CUPS_PPD_DIR /usr/share/cups/model/)
 
