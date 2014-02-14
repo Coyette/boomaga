@@ -7,8 +7,10 @@ function createPng
 {
     local size=$1
     local name=$2
-    rsvg-convert ${SVG_FILE} -w $size -h $size -o $name
+    rsvg-convert ${SVG_FILE} -w $size -h $size -o boomaga.iconset/$name
 }
+
+[ -d boomaga.iconset ] || mkdir boomaga.iconset
 
 createPng 16   "icon_16x16.png"
 createPng 32   "icon_16x16@2x.png"
