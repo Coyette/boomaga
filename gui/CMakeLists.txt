@@ -219,11 +219,13 @@ install(TARGETS ${INSTANCE_NAME} RUNTIME DESTINATION ${GUI_DIR})
 install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
 
 if(USE_DBUS)
+    set(OUT_SERVICE_FILE ${OUT_DIR}/${DBUS_SERVICE_DIR}/org.boomaga.service)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/org.boomaga.service
-               ${OUT_DIR}/${DBUS_SERVICE_DIR}/org.boomaga.service
-               @ONLY)
+                   ${OUT_SERVICE_FILE}
+                   @ONLY)
 
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service DESTINATION ${DBUS_SERVICE_DIR})
+    install(FILES ${OUT_SERVICE_FILE}
+            DESTINATION ${DBUS_SERVICE_DIR})
 endif()
 
 add_subdirectory(pdfmerger)
