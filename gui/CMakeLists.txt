@@ -149,6 +149,23 @@ include_directories(
 )
 
 
+if(APPLE)
+
+    set(EXECUTABLE_OUTPUT_PATH  ${OUT_DIR}/MacOS)
+    set(OUT_TRANSLATIONS_DIR    ${OUT_DIR}/Resources/translations)
+
+else()
+
+    set(EXECUTABLE_OUTPUT_PATH  ${OUT_DIR}/${CMAKE_INSTALL_PREFIX}/bin)
+    set(OUT_TRANSLATIONS_DIR    ${OUT_DIR}/${TRANSLATIONS_DIR})
+
+endif()
+
+
+foreach(f ${TS_FILES})
+    set_source_files_properties(${f} PROPERTIES OUTPUT_LOCATION ${OUT_TRANSLATIONS_DIR})
+endforeach()
+
 include(translations/translatorsinfo/CMakeLists.txt)
 get_translatorsinfo_qrc(translatorsinfo_qrc)
 
@@ -201,11 +218,11 @@ target_link_libraries(${INSTANCE_NAME} ${LIBRARIES} ${QT_LIBRARIES} ${CUPS_LIBRA
 install(TARGETS ${INSTANCE_NAME} RUNTIME DESTINATION ${GUI_DIR})
 install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/org.boomaga.service
-               ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service
+if(USE_DBUS)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/org.boomaga.service
+               ${OUT_DIR}/${DBUS_SERVICE_DIR}/org.boomaga.service
                @ONLY)
 
-if(USE_DBUS)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service DESTINATION ${DBUS_SERVICE_DIR})
 endif()
 

@@ -44,7 +44,6 @@ set(MERGER_MOCS
 
 
 #*******************************************
-set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/..")
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 include_directories(
@@ -61,6 +60,11 @@ else()
     qt5_wrap_cpp(MERGER_MOC_SOURCES ${MERGER_MOCS})
 endif()
 
+if(APPLE)
+    set(EXECUTABLE_OUTPUT_PATH ${OUT_DIR}/MacOS)
+else()
+    set(EXECUTABLE_OUTPUT_PATH ${OUT_DIR}/${CMAKE_INSTALL_PREFIX}/lib/boomaga/)
+endif()
 
 add_executable(${PROJECT_NAME} ${MERGER_HEADERS} ${MERGER_SOURCES} ${MERGER_MOC_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${POPPLER_LIBRARIES})

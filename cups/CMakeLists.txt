@@ -31,31 +31,46 @@ project(boomagaCups)
 set(CUPS_BACKEND_ID "MFG:${CUPS_BACKEND_MANUFACTURER};CMD:PJL,PDF;MDL:${CUPS_BACKEND_MODEL};CLS:PRINTER;DES:${CUPS_BACKEND_DESCRIPTION};DRV:DPDF,R1,M0;")
 add_definitions(-DCUPS_BACKEND_ID=\"${CUPS_BACKEND_ID}\")
 
+if(APPLE)
+    set(OUT_BACKEND_FILE ${OUT_DIR}/Resources/cups/${INSTANCE_NAME})
+    set(OUT_FILTER_FILE  ${OUT_DIR}/Resources/cups/boomaga_pstopdf)
+    set(OUT_PPD_FILE     ${OUT_DIR}/Resources/cups/${INSTANCE_NAME}.ppd)
+else()
+    set(OUT_BACKEND_FILE ${OUT_DIR}/${CUPS_BACKEND_DIR}/${INSTANCE_NAME})
+    set(OUT_FILTER_FILE  ${OUT_DIR}/${CUPS_FILTER_DIR}/boomaga_pstopdf)
+    set(OUT_PPD_FILE     ${OUT_DIR}/${CUPS_PPD_DIR}/${INSTANCE_NAME}.ppd)
+endif()
+
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga
-               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
+               ${OUT_BACKEND_FILE}
                @ONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga_pstopdf
+               ${OUT_FILTER_FILE}
+               COPYONLY)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
-               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
+               ${OUT_PPD_FILE}
                @ONLY)
 
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
+install(FILES ${OUT_BACKEND_FILE}
   DESTINATION ${CUPS_BACKEND_DIR}
   PERMISSIONS
     OWNER_READ OWNER_WRITE OWNER_EXECUTE
 )
 
-install(FILES boomaga_pstopdf
-  DESTINATION ${CUPS_FILTER_DIR}
-  PERMISSIONS
-    OWNER_READ OWNER_WRITE OWNER_EXECUTE
-    GROUP_READ             GROUP_EXECUTE
-    WORLD_READ             WORLD_EXECUTE
-)
+if(NOT APPLE)
+    install(FILES ${OUT_FILTER_FILE}
+        DESTINATION ${CUPS_FILTER_DIR}
+        PERMISSIONS
+        OWNER_READ OWNER_WRITE OWNER_EXECUTE
+        GROUP_READ             GROUP_EXECUTE
+        WORLD_READ             WORLD_EXECUTE
+    )
+endif()
 
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
+install(FILES ${OUT_PPD_FILE}
   DESTINATION ${CUPS_PPD_DIR}
   PERMISSIONS
     OWNER_READ OWNER_WRITE

@@ -75,7 +75,7 @@ if((USE_QT4 AND USE_QT5) OR
     endif()
 endif()
 
-
+set(OUT_DIR ${CMAKE_BINARY_DIR}/out)
 
 # Linux ***************************************
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
@@ -100,6 +100,7 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     set(USE_QT4 OFF)
     set(USE_DBUS 0)
     set(DEF_CUPS_PPD_DIR /usr/share/cups/model/)
+    set(OUT_DIR ${CMAKE_BINARY_DIR}/boomaga.app/Contents)
 
 # Unsupported OS ******************************
 else()
@@ -152,7 +153,18 @@ endif()
 
 add_subdirectory(cups)
 add_subdirectory(gui)
-install(FILES boomaga.1.gz  DESTINATION share/man/man1)
+
+if(NOT APPLE)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.1.gz
+               ${OUT_DIR}/${CMAKE_INSTALL_PREFIX}/share/man/man1/boomaga.1.gz
+               COPYONLY
+    )
+
+    install(FILES
+        ${OUT_DIR}/${CMAKE_INSTALL_PREFIX}/share/man/man1/boomaga.1.gz
+        DESTINATION share/man/man1
+    )
+endif()
 
 message(STATUS "*****************************************************")
 message(STATUS "* boomaga ver. ${FULL_VERSION}")
