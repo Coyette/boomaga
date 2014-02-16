@@ -100,7 +100,16 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     set(USE_QT4 OFF)
     set(USE_DBUS 0)
     set(DEF_CUPS_PPD_DIR /usr/share/cups/model/)
-    set(OUT_DIR ${CMAKE_BINARY_DIR}/boomaga.app/Contents)
+    set(BUNDLE_DIR ${CMAKE_BINARY_DIR}/Boomaga.app)
+    set(OUT_DIR ${CMAKE_BINARY_DIR}/out/Contents)
+
+    #set(CMAKE_OSX_DEPLOYMENT_TARGET 10.8)
+
+    set(MACOSX_BUNDLE_INFO_STRING       "${PROJECT_NAME} - Version ${FULL_VERSION}")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION    ${FULL_VERSION})
+    set(MACOSX_BUNDLE_ICON_FILE         "boomaga.icns")
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER    "org.boomaga")
+    set(MACOSX_BUNDLE_BUNDLE_NAME       "Boomaga")
 
 # Unsupported OS ******************************
 else()
@@ -204,3 +213,9 @@ SET(CPACK_SOURCE_IGNORE_FILES ${CPACK_IGNORE_FILES})
 INCLUDE(CPack)
 # simulate autotools' "make dist"
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
+
+
+if(APPLE)
+    include(mac/BuildAppleBundle.cmake)
+
+endif()
